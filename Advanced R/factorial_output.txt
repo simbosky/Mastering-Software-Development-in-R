@@ -1,0 +1,58 @@
+# Test 1
+
+Results for x = 1 provide meaningful insights.  Factorial_mem is the fastest which
+makes sense since I incorporated the primitive factorial() function, which leverages
+C code.  Factorial_reduce is the slowest and this is likely because I include an
+if() statement to check if the user has the purrr package installed.  Factorial_loop
+and Factorial_func are comparable to one another and are not that much slower
+than Factorial_mem (approximately .333 times slower).
+
+microbenchmark(
+  Factorial_loop(1),
+  Factorial_reduce(1),
+  Factorial_func(1),
+  Factorial_mem(1)
+)
+Unit: nanoseconds
+                expr   min      lq     mean  median       uq    max neval cld
+   Factorial_loop(1)  1582  1972.0  2604.15  2378.5   2760.0  14953   100   a 
+ Factorial_reduce(1) 83609 87624.5 95450.15 89558.5 100712.5 260809   100   b
+   Factorial_func(1)  1581  1856.0  2768.31  2169.0   2518.5  13935   100   a 
+    Factorial_mem(1)   980  1189.0  1790.31  1414.5   1699.0  12670   100   a 
+
+
+# Test 2
+
+Results for x = 10 indicates that Factorial_mem is considerably faster (3x) then
+the next fastest function (Factorial_loop). Factorial_loop is only slightly faster
+than Factorial_func.  However, Factorial_reduce is significantly slower (10x) then
+the next slowest function.
+
+microbenchmark(
+  Factorial_loop(10),
+  Factorial_reduce(10),
+  Factorial_func(10),
+  Factorial_mem(10)
+  )
+Unit: microseconds
+                 expr    min       lq      mean   median       uq     max neval cld
+   Factorial_loop(10)  7.538   8.8570  10.27196   9.4905  10.7335  18.931   100   b 
+ Factorial_reduce(10) 96.216 107.0295 121.89956 112.3380 115.4240 360.642   100   c
+   Factorial_func(10) 10.654  12.0380  13.53490  12.6740  13.6530  21.436   100   b 
+    Factorial_mem(10)  1.717   2.7575   3.63430   3.2590   3.7310  33.802   100   a
+
+
+# Test 3
+
+Results for x = 100 shows Factorial_mem being ~36 times faster than any other
+function.  Factorial_loop is the second fastest with Factorial_func nearly as fast
+as Factorial_loop.  Factorial_reduce continues to be the slowest; however, in this 
+instance it is only 2 times slower than the next slowest function.
+
+Unit: microseconds
+                  expr     min       lq      mean   median       uq     max neval  cld
+   Factorial_loop(100)  86.574 106.6285 110.29561 110.0665 113.8000 153.464   100    b  
+ Factorial_reduce(100) 200.513 210.0740 219.17173 215.0465 222.5875 382.713   100    d
+   Factorial_func(100) 109.735 116.9345 124.41876 124.4355 126.3725 340.088   100    c 
+    Factorial_mem(100)   1.950   2.6280   3.72778   3.1460   3.5105  27.881   100    a 
+
