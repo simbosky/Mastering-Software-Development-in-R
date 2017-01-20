@@ -60,14 +60,35 @@ print.LongitudinalData <- function(x, ...) {
 
 # summary function
 summary.LongitudinalData <- function(object, ...) {
-  object <- list(summary.visit = summary(object$visit))
+  object <- list(
+    summary.id = unique(object$id),
+    summary.data = data.frame(
+      visit = object$visit,
+      room = object$room,
+      value = object$value
+    ) 
+    )
+  if(length(unique(object$summary.data$visit)) == 1 & 
+     length(unique(object$summary.data$room)) == 1){
+    
+    object$summary.data <- summary(object$summary.data$value)
+    
+  } else {
+    
+    object$summary.data <- object$summary.data %>% 
+      aggregate(value ~ visit + room, FUN = mean, data = .) %>%
+      spread(room, value)
+    
+  }
+     
   class(object) <- "summary_LongitudinalData"
   object
 }
 
 # print summary method for “LongitudinalData” object
 print.summary_LongitudinalData <- function(x, ...) {
-  return(table(x$summary.visit))
+  cat("Subject ID: ", x$summary.id, "\n")
+  print(x$summary.data)
   invisible(x)
 }
 
