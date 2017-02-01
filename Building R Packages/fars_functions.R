@@ -87,6 +87,28 @@ fars_read_years <- function(years) {
   })
 }
 
+
+#' Summarize Observations by Year
+#' 
+#' \code{fars_summarize_years} will read in multiple Fatality Analysis Reporting 
+#'   System data files based on the years provided and summarise the number of
+#'   observations by month and year.
+#' 
+#' @param years The years relating to the file names to be read in
+#' 
+#' @return \code{fars_summarize_years} will return a wide-formatted data frame. 
+#' 
+#' @seealso \code{\link{fars_read_years}} to understand how the file name is created
+#' 
+#' @examples 
+#' fars_summarize_years(2015:2016)
+#' 
+#' @importFrom dplyr bind_rows
+#' @importFrom dplyr group_by
+#' @importFrom dplyr summarize
+#' @importFrom tidyr spread
+#' 
+#' @export
 fars_summarize_years <- function(years) {
   dat_list <- fars_read_years(years)
   dplyr::bind_rows(dat_list) %>% 
@@ -95,6 +117,32 @@ fars_summarize_years <- function(years) {
     tidyr::spread(year, n)
 }
 
+
+#' Map State Accidents
+#' 
+#' \code{fars_map_state} will plot the accidents on a map for a given state
+#'   and year.
+#' 
+#' @param state.num State number
+#' @param years The year of concern
+#' 
+#' @return \code{fars_map_state} will return a map plot of accidents for the given
+#'   state and year. If no accidents occurred in that state for that year a 
+#'   notification will be provided and if an invalid state number is provided
+#'   an error will be returned.
+#' 
+#' @seealso 
+#' \code{\link{make_filename}} to understand how the file name is created
+#' \code{\link{fars_read}} to understand how the file is read in
+#' 
+#' @examples 
+#' fars_map_state(2, 2016)
+#' 
+#' @importFrom dplyr filter
+#' @importFrom maps map
+#' @importFrom graphics points
+#' 
+#' @export
 fars_map_state <- function(state.num, year) {
   filename <- make_filename(year)
   data <- fars_read(filename)
